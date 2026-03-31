@@ -3,82 +3,107 @@
     <img :src="bg" class="bg" />
 
     <div class="content">
+      <!-- 🌍 TOGGLE -->
+      <div class="lang-toggle">
+        <div class="switch" @click="toggleLang">
+          <div class="track">
+            <span class="label left">EN</span>
+            <span class="label right">ES</span>
+            <div class="knob" :class="{ es: lang === 'es' }"></div>
+          </div>
+        </div>
+      </div>
+
       <h1>
         <span>Chugga Chugga</span>
-        <span>TWO TWO!</span>
+        <span>{{ lang === "es" ? "DOS DOS!" : "TWO TWO!" }}</span>
       </h1>
 
-      <h2>All aboard!</h2>
+      <h2>{{ t.allAboard }}</h2>
+
       <p class="sub">
         <span class="name">Abigail Woolly</span>
-        <span class="turning">is turning</span>
-        <span class="age">TWO!</span>
+        <span class="turning">{{ t.turning }}</span>
+        <span class="age">{{ lang === "es" ? "DOS!" : "TWO!" }}</span>
       </p>
-      <p class="journey">Your journey begins here…</p>
 
-      <!-- ✅ removed showCards -->
+      <p class="journey">{{ t.journey }}</p>
+
       <div class="details">
-        <!-- 🚉 DEPARTURE -->
         <div class="stop"></div>
-        <!-- TRAIN -->
+
         <div class="train-wrap">
           <img :src="train" class="train train-1" />
           <img :src="train" class="train train-2" />
           <div class="train-smoke"></div>
         </div>
+
+        <!-- 🚉 -->
         <a
           :href="calendarLink"
           class="detail-box"
           :class="{ show: visibleCards >= 1 }"
         >
-          <div class="label">DEPARTURE</div>
-          <div class="value">April 25, 2026 at 5PM</div>
-          <div class="sub-value">Tap to add to calendar</div>
+          <div class="label">{{ t.departure }}</div>
+          <div class="value">
+            {{
+              lang === "es"
+                ? "25 de abril de 2026, 5PM"
+                : "April 25, 2026 at 5PM"
+            }}
+          </div>
+          <div class="sub-value">
+            {{
+              lang === "es" ? "Agregar al calendario" : "Tap to add to calendar"
+            }}
+          </div>
         </a>
 
-        <!-- 🎟 RSVP -->
+        <!-- 🎟 -->
         <div class="stop"></div>
         <a
           :href="smsLink"
           class="detail-box rsvp"
           :class="{ show: visibleCards >= 2 }"
         >
-          <div class="label">BOARDING PASS</div>
-          <div class="value">Reserve Your Seat</div>
-          <div class="sub-value">Tap to RSVP</div>
+          <div class="label">{{ t.boarding }}</div>
+          <div class="value">{{ t.reserve }}</div>
+          <div class="sub-value">
+            {{ lang === "es" ? "Confirmar asistencia" : "Tap to RSVP" }}
+          </div>
         </a>
 
-        <!-- 📍 DESTINATION -->
+        <!-- 📍 -->
         <div class="stop"></div>
         <a
           :href="mapLink"
           class="detail-box"
           :class="{ show: visibleCards >= 3 }"
         >
-          <div class="label">DESTINATION</div>
+          <div class="label">{{ t.destination }}</div>
           <div class="value">707 Pink Gladiola Rd</div>
           <div class="sub-value">Broken Bow, OK</div>
         </a>
 
-        <!-- 🎁 GIFT DEPOT -->
+        <!-- 🎁 -->
         <div class="stop"></div>
         <div class="detail-box gifts" :class="{ show: visibleCards >= 4 }">
-          <div class="label">GIFT STATION</div>
-          <div class="gift-title">Optional gifts for Abigail</div>
+          <div class="label">{{ t.giftStation }}</div>
+          <div class="gift-title">{{ t.optionalGifts }}</div>
 
           <div class="links">
             <a :href="registryLink" target="_blank">
-              <div class="link-main">🧸 Toy Station</div>
+              <div class="link-main">🧸 {{ t.toy }}</div>
               <div class="link-sub">Amazon Registry</div>
             </a>
 
             <a :href="paypalLink" target="_blank">
-              <div class="link-main">📦 Parcel Station</div>
+              <div class="link-main">📦 {{ t.parcel }}</div>
               <div class="link-sub">PayPal</div>
             </a>
 
             <a :href="cashappLink" target="_blank">
-              <div class="link-main">💌 Envelope Station</div>
+              <div class="link-main">💌 {{ t.envelope }}</div>
               <div class="link-sub">Cash App</div>
             </a>
           </div>
@@ -86,7 +111,6 @@
       </div>
     </div>
 
-    <!-- BACKGROUND SMOKE -->
     <div class="smoke">
       <span v-for="n in 6" :key="n"></span>
     </div>
@@ -97,7 +121,49 @@
 import { ref, onMounted, nextTick } from "vue";
 import train from "./assets/images/train.png";
 import bg from "./assets/images/background-main.jpg";
+import { computed } from "vue";
 
+/* 🌍 LANGUAGE AUTO-DETECT */
+const lang = ref(navigator.language.startsWith("es") ? "es" : "en");
+
+function toggleLang() {
+  lang.value = lang.value === "en" ? "es" : "en";
+}
+
+/* 🌍 TRANSLATIONS */
+const text = {
+  en: {
+    allAboard: "All aboard!",
+    turning: "is turning",
+    journey: "Your journey begins here…",
+    departure: "DEPARTURE",
+    boarding: "BOARDING PASS",
+    reserve: "Reserve Your Seat",
+    destination: "DESTINATION",
+    giftStation: "GIFT STATION",
+    optionalGifts: "Optional gifts for Abigail",
+    toy: "Toy Station",
+    parcel: "Parcel Station",
+    envelope: "Envelope Station",
+  },
+  es: {
+    allAboard: "¡Todos a bordo!",
+    turning: "cumple",
+    journey: "Tu viaje comienza aquí…",
+    departure: "SALIDA",
+    boarding: "PASE DE ABORDAJE",
+    reserve: "Reserva tu lugar",
+    destination: "DESTINO",
+    giftStation: "ESTACIÓN DE REGALOS",
+    optionalGifts: "Regalos opcionales para Abigail",
+    toy: "Estación de juguetes",
+    parcel: "Estación de paquetes",
+    envelope: "Estación de sobres",
+  },
+};
+
+/* 🎯 CLEAN ACCESS */
+const t = computed(() => text[lang.value]);
 /* 🚂 STATE */
 const visibleCards = ref(0);
 
@@ -157,8 +223,14 @@ const mapLink = /iPhone|iPad|Mac/i.test(navigator.userAgent)
   : `https://maps.google.com?q=${encodeURIComponent(address)}`;
 
 /* 🎟 RSVP */
-const smsLink = "sms:9073177125?body=Hi! We’re coming to Abigail’s party! 🚂🎉";
-
+const smsLink = computed(
+  () =>
+    `sms:9073177125?body=${encodeURIComponent(
+      lang.value === "es"
+        ? "¡Hola! ¡Vamos a la fiesta de Abigail! 🚂🎉"
+        : "Hi! We’re coming to Abigail’s party! 🚂🎉",
+    )}`,
+);
 /* 🎁 GIFTS */
 const registryLink =
   "https://www.amazon.com/registries/gl/guest-view/1KBPQF8ME7P2A";
@@ -173,10 +245,25 @@ const isApple = /iPhone|iPad/i.test(navigator.userAgent);
 const start = "20260425T220000Z";
 const end = "20260426T000000Z";
 
-const googleCalendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=Abigail+Turns+TWO!+🚂&dates=${start}/${end}&location=${encodeURIComponent(address)}&details=Chugga+Chugga+TWO+TWO!`;
-
-const appleCalendarFile = `${import.meta.env.BASE_URL}abigail-party.ics`;
-const calendarLink = isApple ? appleCalendarFile : googleCalendarLink;
+const googleCalendarLink = computed(
+  () =>
+    `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      lang.value === "es" ? "¡Abigail cumple DOS! 🚂" : "Abigail Turns TWO! 🚂",
+    )}&dates=${start}/${end}&location=${encodeURIComponent(address)}&details=${encodeURIComponent(
+      lang.value === "es"
+        ? "¡Chugga Chugga DOS DOS! Ven a celebrar."
+        : "Chugga Chugga TWO TWO! Come celebrate.",
+    )}`,
+);
+const appleCalendarFile = computed(
+  () =>
+    `${import.meta.env.BASE_URL}/${
+      lang.value === "es" ? "abigail-party-es.ics" : "abigail-party.ics"
+    }`,
+);
+const calendarLink = computed(() =>
+  isApple ? appleCalendarFile : googleCalendarLink.value,
+);
 </script>
 
 <style>
@@ -468,6 +555,28 @@ h2 {
   letter-spacing: 1.2px;
   color: #555;
   font-weight: 700;
+}
+.lang-toggle .track {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  position: relative;
+  width: 70px; /* adjust if needed */
+}
+
+.lang-toggle .label {
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.lang-toggle .label.left {
+  text-align: left;
+}
+
+.lang-toggle .label.right {
+  text-align: right;
 }
 
 .value {

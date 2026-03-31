@@ -262,7 +262,7 @@ const appleCalendarFile = computed(
     }`,
 );
 const calendarLink = computed(() =>
-  isApple ? appleCalendarFile : googleCalendarLink.value,
+  isApple ? appleCalendarFile.value : googleCalendarLink.value,
 );
 </script>
 

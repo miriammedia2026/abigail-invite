@@ -175,8 +175,7 @@ const end = "20260426T000000Z";
 
 const googleCalendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=Abigail+Turns+TWO!+🚂&dates=${start}/${end}&location=${encodeURIComponent(address)}&details=Chugga+Chugga+TWO+TWO!`;
 
-const appleCalendarFile = "/abigail-party.ics";
-
+const appleCalendarFile = `${import.meta.env.BASE_URL}abigail-party.ics`;
 const calendarLink = isApple ? appleCalendarFile : googleCalendarLink;
 </script>
 

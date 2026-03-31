@@ -257,7 +257,7 @@ const googleCalendarLink = computed(
 );
 const appleCalendarFile = computed(
   () =>
-    `${import.meta.env.BASE_URL}/${
+    `https://miriammedia2026.github.io/abigail-invite/${
       lang.value === "es" ? "abigail-party-es.ics" : "abigail-party.ics"
     }`,
 );

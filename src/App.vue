@@ -94,7 +94,7 @@
               </option>
             </select>
 
-            <select v-if="form.attending === 'Yes'" v-model="form.guests">
+            <select v-if="isAttending" v-model="form.guests">
               <option value="">
                 {{ lang === "es" ? "Invitados" : "Guests" }}
               </option>
@@ -117,7 +117,7 @@
           <!-- 🎉 SUCCESS -->
           <div v-else class="success-box">
             <!-- ✅ YES -->
-            <template v-if="form.attending === 'Yes'">
+            <template v-if="isAttending">
               <div class="stamp">
                 <span class="stamp-icon">🎟️</span>
                 <span class="stamp-text">
@@ -268,7 +268,7 @@ async function submitForm() {
   }
 
   // ✅ guest validation (ONLY if attending = Yes)
-  if (form.value.attending === "Yes" && !form.value.guests) {
+  if (isAttending.value && !form.value.guests) {
     alert(
       lang.value === "es"
         ? "Por favor selecciona el número de invitados"
@@ -321,6 +321,9 @@ async function submitForm() {
 
 /* 🎯 CLEAN ACCESS */
 const t = computed(() => text[lang.value]);
+const isAttending = computed(() => {
+  return form.value.attending?.trim().toLowerCase() === "yes";
+});
 /* 🚂 STATE */
 const visibleCards = ref(0);
 

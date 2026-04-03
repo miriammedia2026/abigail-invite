@@ -84,17 +84,18 @@
               <option value="">
                 {{ lang === "es" ? "¿Asistirás?" : "Can you attend?" }}
               </option>
-              <option value="Yes">
+              <option value="yes">
                 {{ lang === "es" ? "Sí asistiré" : "Yes, I’ll be there" }}
               </option>
-              <option value="No">
+
+              <option value="no">
                 {{
                   lang === "es" ? "No podré asistir" : "Sorry, can’t make it"
                 }}
               </option>
             </select>
 
-            <select v-if="isAttending" v-model="form.guests">
+            <select v-if="form.attending === 'yes'" v-model="form.guests">
               <option value="">
                 {{ lang === "es" ? "Invitados" : "Guests" }}
               </option>
@@ -255,6 +256,7 @@ const form = ref({
 
 const success = ref(false);
 const loading = ref(false);
+const attendingResult = ref(null);
 
 async function submitForm() {
   // ✅ required fields
@@ -268,7 +270,7 @@ async function submitForm() {
   }
 
   // ✅ guest validation (ONLY if attending = Yes)
-  if (isAttending.value && !form.value.guests) {
+  if (form.value.attending === "yes" && !form.value.guests) {
     alert(
       lang.value === "es"
         ? "Por favor selecciona el número de invitados"
@@ -289,6 +291,7 @@ async function submitForm() {
     );
 
     if (response.ok) {
+      attendingResult.value = form.value.attending; // ✅ ADD THIS LINE
       success.value = true;
 
       // reset form AFTER short delay (smooth UX)
@@ -322,7 +325,7 @@ async function submitForm() {
 /* 🎯 CLEAN ACCESS */
 const t = computed(() => text[lang.value]);
 const isAttending = computed(() => {
-  return form.value.attending?.trim().toLowerCase() === "yes";
+  return attendingResult.value === "yes";
 });
 /* 🚂 STATE */
 const visibleCards = ref(0);

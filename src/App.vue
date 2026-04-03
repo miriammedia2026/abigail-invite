@@ -62,14 +62,15 @@
         <!-- 🎟 -->
         <div class="stop"></div>
         <a
-          :href="smsLink"
+          :href="rsvpLink"
+          target="_blank"
           class="detail-box rsvp"
           :class="{ show: visibleCards >= 2 }"
         >
           <div class="label">{{ t.boarding }}</div>
           <div class="value">{{ t.reserve }}</div>
           <div class="sub-value">
-            {{ lang === "es" ? "Confirmar asistencia" : "Tap to RSVP" }}
+            {{ lang === "es" ? "Abrir formulario RSVP" : "Open RSVP Form" }}
           </div>
         </a>
 
@@ -81,8 +82,8 @@
           :class="{ show: visibleCards >= 3 }"
         >
           <div class="label">{{ t.destination }}</div>
-          <div class="value">707 Pink Gladiola Rd</div>
-          <div class="sub-value">Broken Bow, OK</div>
+          <div class="value">1302 Morgan Ln.</div>
+          <div class="sub-value">Broken Bow, OK 74728</div>
         </a>
 
         <!-- 🎁 -->
@@ -215,7 +216,7 @@ function triggerBounce(index) {
 }
 
 /* 📍 ADDRESS */
-const address = "707 Pink Gladiola Rd, Broken Bow, OK";
+const address = "1302 Morgan Ln., Broken Bow, OK 74728";
 
 /* 🗺 MAP LINKS */
 const mapLink = /iPhone|iPad|Mac/i.test(navigator.userAgent)
@@ -223,14 +224,8 @@ const mapLink = /iPhone|iPad|Mac/i.test(navigator.userAgent)
   : `https://maps.google.com?q=${encodeURIComponent(address)}`;
 
 /* 🎟 RSVP */
-const smsLink = computed(
-  () =>
-    `sms:9073177125?body=${encodeURIComponent(
-      lang.value === "es"
-        ? "¡Hola! ¡Vamos a la fiesta de Abigail! 🚂🎉"
-        : "Hi! We’re coming to Abigail’s party! 🚂🎉",
-    )}`,
-);
+const rsvpLink =
+  "https://docs.google.com/forms/d/e/1FAIpQLSd4966d2f57-CLuF1ZAdL0HOeA_nNfW1nVIue7DxbTG8ERjOg/viewform";
 /* 🎁 GIFTS */
 const registryLink =
   "https://www.amazon.com/registries/gl/guest-view/1KBPQF8ME7P2A";

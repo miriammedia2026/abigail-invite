@@ -118,7 +118,7 @@
           <!-- 🎉 SUCCESS -->
           <div v-else class="success-box">
             <!-- ✅ YES -->
-            <template v-if="isAttending">
+            <template v-if="isYes">
               <div class="stamp">
                 <span class="stamp-icon">🎟️</span>
                 <span class="stamp-text">
@@ -144,7 +144,7 @@
             </template>
 
             <!-- ❌ NO -->
-            <template v-else>
+            <template v-else-if="isNo">
               <p style="font-size: 18px">
                 {{ lang === "es" ? "¡Te extrañaremos!" : "We’ll miss you!" }}
               </p>
@@ -293,15 +293,6 @@ async function submitForm() {
     if (response.ok) {
       attendingResult.value = form.value.attending; // ✅ ADD THIS LINE
       success.value = true;
-
-      // reset form AFTER short delay (smooth UX)
-      setTimeout(() => {
-        form.value = {
-          name: "",
-          attending: "",
-          guests: "",
-        };
-      }, 500);
     } else {
       alert(
         lang.value === "es"
@@ -324,9 +315,8 @@ async function submitForm() {
 
 /* 🎯 CLEAN ACCESS */
 const t = computed(() => text[lang.value]);
-const isAttending = computed(() => {
-  return attendingResult.value === "yes";
-});
+const isYes = computed(() => success.value && attendingResult.value === "yes");
+const isNo = computed(() => success.value && attendingResult.value === "no");
 /* 🚂 STATE */
 const visibleCards = ref(0);
 

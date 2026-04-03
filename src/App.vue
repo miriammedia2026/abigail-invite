@@ -61,18 +61,71 @@
 
         <!-- 🎟 -->
         <div class="stop"></div>
-        <a
-          :href="rsvpLink"
-          target="_blank"
-          class="detail-box rsvp"
-          :class="{ show: visibleCards >= 2 }"
-        >
+
+        <div class="detail-box rsvp" :class="{ show: visibleCards >= 2 }">
           <div class="label">{{ t.boarding }}</div>
           <div class="value">{{ t.reserve }}</div>
-          <div class="sub-value">
-            {{ lang === "es" ? "Abrir formulario RSVP" : "Open RSVP Form" }}
+
+          <!-- 📝 FORM -->
+          <div v-if="!success">
+            <input
+              v-model="form.name"
+              :placeholder="lang === 'es' ? 'Tu nombre' : 'Your Name'"
+            />
+
+            <select v-model="form.attending">
+              <option value="">
+                {{ lang === "es" ? "¿Asistirás?" : "Can you attend?" }}
+              </option>
+              <option value="Yes">
+                {{ lang === "es" ? "Sí asistiré" : "Yes, I’ll be there" }}
+              </option>
+              <option value="No">
+                {{
+                  lang === "es" ? "No podré asistir" : "Sorry, can’t make it"
+                }}
+              </option>
+            </select>
+
+            <select v-if="form.attending === 'Yes'" v-model="form.guests">
+              <option value="">
+                {{ lang === "es" ? "Invitados" : "Guests" }}
+              </option>
+              <option v-for="n in 7" :key="n" :value="n">{{ n }}</option>
+            </select>
+
+            <button @click="submitForm" :disabled="loading">
+              {{
+                loading
+                  ? lang === "es"
+                    ? "Enviando..."
+                    : "Sending..."
+                  : lang === "es"
+                    ? "Enviar"
+                    : "Submit"
+              }}
+            </button>
           </div>
-        </a>
+
+          <!-- 🎉 SUCCESS -->
+          <div v-else>
+            <p>
+              🚂
+              {{
+                lang === "es"
+                  ? "¡Estás a bordo del tren!"
+                  : "You're on the train!"
+              }}
+            </p>
+            <p>
+              {{
+                lang === "es"
+                  ? "¡Nos vemos en la fiesta!"
+                  : "See you at the party!"
+              }}
+            </p>
+          </div>
+        </div>
 
         <!-- 📍 -->
         <div class="stop"></div>
@@ -162,6 +215,77 @@ const text = {
     envelope: "Estación de sobres",
   },
 };
+const form = ref({
+  name: "",
+  attending: "",
+  guests: "",
+});
+
+const success = ref(false);
+const loading = ref(false);
+
+async function submitForm() {
+  // ✅ required fields
+  if (!form.value.name || !form.value.attending) {
+    alert(
+      lang.value === "es"
+        ? "Por favor completa todos los campos"
+        : "Please fill out all fields",
+    );
+    return;
+  }
+
+  // ✅ guest validation (ONLY if attending = Yes)
+  if (form.value.attending === "Yes" && !form.value.guests) {
+    alert(
+      lang.value === "es"
+        ? "Por favor selecciona el número de invitados"
+        : "Please select number of guests",
+    );
+    return;
+  }
+
+  try {
+    loading.value = true;
+
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycbwFYcM_U70WsbSIMBLuCS-8JyoZCZczsnjY0BIO9H5ILuHr7gXP_Pm2YlE4rQJglD8A/exec",
+      {
+        method: "POST",
+        body: JSON.stringify(form.value),
+      },
+    );
+
+    if (response.ok) {
+      success.value = true;
+
+      // reset form AFTER short delay (smooth UX)
+      setTimeout(() => {
+        form.value = {
+          name: "",
+          attending: "",
+          guests: "",
+        };
+      }, 500);
+    } else {
+      alert(
+        lang.value === "es"
+          ? "Algo salió mal. Inténtalo de nuevo."
+          : "Something went wrong. Please try again.",
+      );
+    }
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      lang.value === "es"
+        ? "Error de red. Inténtalo de nuevo."
+        : "Network error. Try again.",
+    );
+  } finally {
+    loading.value = false;
+  }
+}
 
 /* 🎯 CLEAN ACCESS */
 const t = computed(() => text[lang.value]);
@@ -541,7 +665,26 @@ h2 {
   border: 2px dashed rgba(255, 255, 255, 0.6);
   color: white;
 }
+.rsvp input,
+.rsvp select {
+  width: 85%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: none;
+  font-family: inherit;
+}
 
+.rsvp button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #6aa89c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 /* =========================================================
    👀 READABILITY BOOST
 ========================================================= */

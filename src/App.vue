@@ -64,8 +64,15 @@
 
         <div class="detail-box rsvp" :class="{ show: visibleCards >= 2 }">
           <div class="label">{{ t.boarding }}</div>
-          <div class="value">{{ t.reserve }}</div>
-
+          <div class="value">
+            {{
+              success
+                ? lang === "es"
+                  ? "Estado de Abordaje"
+                  : "Boarding Status"
+                : t.reserve
+            }}
+          </div>
           <!-- 📝 FORM -->
           <div v-if="!success">
             <input
@@ -108,22 +115,47 @@
           </div>
 
           <!-- 🎉 SUCCESS -->
-          <div v-else>
-            <p>
-              🚂
-              {{
-                lang === "es"
-                  ? "¡Estás a bordo del tren!"
-                  : "You're on the train!"
-              }}
-            </p>
-            <p>
-              {{
-                lang === "es"
-                  ? "¡Nos vemos en la fiesta!"
-                  : "See you at the party!"
-              }}
-            </p>
+          <div v-else class="success-box">
+            <!-- ✅ YES -->
+            <template v-if="form.attending === 'Yes'">
+              <div class="stamp">
+                <span class="stamp-icon">🎟️</span>
+                <span class="stamp-text">
+                  {{ lang === "es" ? "APROBADO" : "APPROVED" }}
+                </span>
+              </div>
+
+              <p>
+                {{
+                  lang === "es"
+                    ? "¡Estás a bordo del tren!"
+                    : "Boarding Pass Confirmed!"
+                }}
+              </p>
+
+              <p>
+                {{
+                  lang === "es"
+                    ? "¡Nos vemos en la fiesta!"
+                    : "See you at the party!"
+                }}
+              </p>
+            </template>
+
+            <!-- ❌ NO -->
+            <template v-else>
+              <p style="font-size: 18px">
+                {{ lang === "es" ? "¡Te extrañaremos!" : "We’ll miss you!" }}
+              </p>
+
+              <p>
+                {{
+                  lang === "es"
+                    ? "Gracias por avisarnos"
+                    : "Thank you for letting us know"
+                }}
+              </p>
+            </template>
           </div>
         </div>
 
@@ -347,9 +379,6 @@ const mapLink = /iPhone|iPad|Mac/i.test(navigator.userAgent)
   ? `http://maps.apple.com/?q=${encodeURIComponent(address)}`
   : `https://maps.google.com?q=${encodeURIComponent(address)}`;
 
-/* 🎟 RSVP */
-const rsvpLink =
-  "https://docs.google.com/forms/d/e/1FAIpQLSd4966d2f57-CLuF1ZAdL0HOeA_nNfW1nVIue7DxbTG8ERjOg/viewform";
 /* 🎁 GIFTS */
 const registryLink =
   "https://www.amazon.com/registries/gl/guest-view/1KBPQF8ME7P2A";
@@ -661,29 +690,138 @@ h2 {
 }
 
 .rsvp {
-  background: linear-gradient(135deg, #ffd166, #f4a261);
-  border: 2px dashed rgba(255, 255, 255, 0.6);
-  color: white;
+  background: linear-gradient(135deg, #fff6f9, #fdecef);
+  border: 2px dashed #f48ca6;
+  box-shadow: 0 6px 20px rgba(244, 140, 166, 0.15);
 }
+
 .rsvp input,
 .rsvp select {
-  width: 85%;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 10px;
-  border: none;
-  font-family: inherit;
+  width: 100%;
+  padding: 16px;
+  margin-top: 12px;
+
+  border-radius: 12px;
+
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.95);
+
+  font-size: 17px;
+  font-weight: 500;
+
+  color: #333;
+
+  box-sizing: border-box;
+
+  /* ✨ soft depth */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .rsvp button {
-  margin-top: 10px;
-  padding: 10px 16px;
-  border-radius: 10px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+
+  border-radius: 12px;
   border: none;
-  background: #6aa89c;
+
+  background: #6aa89c; /* 👈 teal */
   color: white;
+
+  font-size: 16px;
   font-weight: bold;
+
   cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+/* ✨ hover + press */
+.rsvp button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(106, 168, 156, 0.4);
+}
+
+.rsvp button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(106, 168, 156, 0.3);
+}
+
+.rsvp input::placeholder {
+  color: #999;
+}
+
+/* 🎟 ticket text tone */
+.rsvp .label {
+  color: #b57a8e;
+  font-size: 14px;
+}
+
+.rsvp .value {
+  color: #a65c73;
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+.rsvp p {
+  font-weight: bold;
+  font-size: 16px;
+  color: #a65c73;
+}
+/* 🎟 STAMP ANIMATION */
+.success-box {
+  position: relative;
+  padding-top: 10px;
+}
+.success-box p {
+  color: #888;
+}
+/* 🎟 REAL STAMP LOOK */
+.stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 110px;
+  height: 110px;
+
+  margin: 10px auto;
+
+  border: 3px dashed #222;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.3);
+
+  transform: rotate(-6deg);
+  opacity: 0.85;
+
+  animation: stampIn 0.5s ease-out;
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    inset 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.stamp-icon {
+  font-size: 36px;
+  opacity: 0.85;
+  filter: blur(0.2px);
+  margin-bottom: 2px;
+}
+
+.stamp-text {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-align: center;
+
+  color: #222;
+
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+
+  opacity: 0.9;
 }
 /* =========================================================
    👀 READABILITY BOOST

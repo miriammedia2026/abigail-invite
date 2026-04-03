@@ -326,13 +326,15 @@ const visibleCards = ref(0);
 
 /* 🚂 ANIMATION */
 onMounted(() => {
-  const duration = 12000;
+  const duration = 6500;
   const totalCards = 4;
   const start = performance.now();
 
   function animate(now) {
-    const progress = Math.min((now - start) / duration, 1);
+    const raw = Math.min((now - start) / duration, 1);
 
+    // ease-out (faster start, smoother finish)
+    const progress = 1 - Math.pow(1 - raw, 2);
     const newIndex = Math.min(
       Math.floor(progress * totalCards) + 1,
       totalCards,

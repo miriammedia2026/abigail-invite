@@ -3,31 +3,21 @@
     <img :src="bg" class="bg" />
 
     <div class="content">
-      <!-- 🌍 TOGGLE -->
-      <div class="lang-toggle">
-        <div class="switch" @click="toggleLang">
-          <div class="track">
-            <span class="label left">EN</span>
-            <span class="label right">ES</span>
-            <div class="knob" :class="{ es: lang === 'es' }"></div>
-          </div>
-        </div>
-      </div>
 
       <h1>
         <span>Chugga Chugga</span>
-        <span>{{ lang === "es" ? "DOS DOS!" : "TWO TWO!" }}</span>
+        <span>TWO TWO!</span>
       </h1>
 
-      <h2>{{ t.allAboard }}</h2>
+      <h2>All aboard!</h2>
 
       <p class="sub">
         <span class="name">Abigail Woolly</span>
-        <span class="turning">{{ t.turning }}</span>
-        <span class="age">{{ lang === "es" ? "DOS!" : "TWO!" }}</span>
+        <span class="turning">is turning</span>
+        <span class="age">TWO!</span>
       </p>
 
-      <p class="journey">{{ t.journey }}</p>
+      <p class="journey">Your journey begins here…</p>
 
       <div class="details">
         <div class="stop"></div>
@@ -44,118 +34,53 @@
           class="detail-box"
           :class="{ show: visibleCards >= 1 }"
         >
-          <div class="label">{{ t.departure }}</div>
-          <div class="value">
-            {{
-              lang === "es"
-                ? "25 de abril de 2026, 5PM"
-                : "April 25, 2026 at 5PM"
-            }}
-          </div>
-          <div class="sub-value">
-            {{
-              lang === "es" ? "Agregar al calendario" : "Tap to add to calendar"
-            }}
-          </div>
+          <div class="label">DEPARTURE</div>
+          <div class="value">April 26, 2026 at 11AM</div>
+          <div class="sub-value">Tap to add to calendar</div>
         </a>
 
         <!-- 🎟 -->
         <div class="stop"></div>
 
         <div class="detail-box rsvp" :class="{ show: visibleCards >= 2 }">
-          <div class="label">{{ t.boarding }}</div>
+          <div class="label">BOARDING PASS</div>
           <div class="value">
-            {{
-              success
-                ? lang === "es"
-                  ? "Estado de Abordaje"
-                  : "Boarding Status"
-                : t.reserve
-            }}
+            {{ success ? "Boarding Status" : "Reserve Your Seat" }}
           </div>
-          <!-- 📝 FORM -->
+
           <div v-if="!success">
-            <input
-              v-model="form.name"
-              :placeholder="lang === 'es' ? 'Tu nombre' : 'Your Name'"
-            />
+            <input v-model="form.name" placeholder="Your Name" />
 
             <select v-model="form.attending">
-              <option value="">
-                {{ lang === "es" ? "¿Asistirás?" : "Can you attend?" }}
-              </option>
-              <option value="yes">
-                {{ lang === "es" ? "Sí asistiré" : "Yes, I’ll be there" }}
-              </option>
-
-              <option value="no">
-                {{
-                  lang === "es" ? "No podré asistir" : "Sorry, can’t make it"
-                }}
-              </option>
+              <option value="">Can you attend?</option>
+              <option value="yes">Yes, I’ll be there</option>
+              <option value="no">Sorry, can’t make it</option>
             </select>
 
             <select v-if="form.attending === 'yes'" v-model="form.guests">
-              <option value="">
-                {{ lang === "es" ? "Invitados" : "Guests" }}
-              </option>
+              <option value="">Guests</option>
               <option v-for="n in 7" :key="n" :value="n">{{ n }}</option>
             </select>
 
             <button @click="submitForm" :disabled="loading">
-              {{
-                loading
-                  ? lang === "es"
-                    ? "Enviando..."
-                    : "Sending..."
-                  : lang === "es"
-                    ? "Enviar"
-                    : "Submit"
-              }}
+              {{ loading ? "Sending..." : "Submit" }}
             </button>
           </div>
 
-          <!-- 🎉 SUCCESS -->
           <div v-else class="success-box">
-            <!-- ✅ YES -->
             <template v-if="isYes">
               <div class="stamp">
                 <span class="stamp-icon">🎟️</span>
-                <span class="stamp-text">
-                  {{ lang === "es" ? "APROBADO" : "APPROVED" }}
-                </span>
+                <span class="stamp-text">APPROVED</span>
               </div>
 
-              <p>
-                {{
-                  lang === "es"
-                    ? "¡Estás a bordo del tren!"
-                    : "Boarding Pass Confirmed!"
-                }}
-              </p>
-
-              <p>
-                {{
-                  lang === "es"
-                    ? "¡Nos vemos en la fiesta!"
-                    : "See you at the party!"
-                }}
-              </p>
+              <p>Boarding Pass Confirmed!</p>
+              <p>See you at the party!</p>
             </template>
 
-            <!-- ❌ NO -->
             <template v-else-if="isNo">
-              <p style="font-size: 18px">
-                {{ lang === "es" ? "¡Te extrañaremos!" : "We’ll miss you!" }}
-              </p>
-
-              <p>
-                {{
-                  lang === "es"
-                    ? "Gracias por avisarnos"
-                    : "Thank you for letting us know"
-                }}
-              </p>
+              <p style="font-size: 18px">We’ll miss you!</p>
+              <p>Thank you for letting us know</p>
             </template>
           </div>
         </div>
@@ -167,30 +92,30 @@
           class="detail-box"
           :class="{ show: visibleCards >= 3 }"
         >
-          <div class="label">{{ t.destination }}</div>
-          <div class="value">1302 Morgan Ln.</div>
-          <div class="sub-value">Broken Bow, OK 74728</div>
+          <div class="label">DESTINATION</div>
+          <div class="value">15681 Wildflower Lane</div>
+          <div class="sub-value">Kenefic, OK 74748</div>
         </a>
 
         <!-- 🎁 -->
         <div class="stop"></div>
         <div class="detail-box gifts" :class="{ show: visibleCards >= 4 }">
-          <div class="label">{{ t.giftStation }}</div>
-          <div class="gift-title">{{ t.optionalGifts }}</div>
+          <div class="label">GIFT STATION</div>
+          <div class="gift-title">Optional gifts for Abigail</div>
 
           <div class="links">
             <a :href="registryLink" target="_blank">
-              <div class="link-main">🧸 {{ t.toy }}</div>
+              <div class="link-main">🧸 Toy Station</div>
               <div class="link-sub">Amazon Registry</div>
             </a>
 
             <a :href="paypalLink" target="_blank">
-              <div class="link-main">📦 {{ t.parcel }}</div>
+              <div class="link-main">📦 Parcel Station</div>
               <div class="link-sub">PayPal</div>
             </a>
 
             <a :href="cashappLink" target="_blank">
-              <div class="link-main">💌 {{ t.envelope }}</div>
+              <div class="link-main">💌 Envelope Station</div>
               <div class="link-sub">Cash App</div>
             </a>
           </div>
@@ -205,49 +130,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, computed } from "vue";
 import train from "./assets/images/train.png";
 import bg from "./assets/images/background-main.jpg";
-import { computed } from "vue";
 
-/* 🌍 LANGUAGE AUTO-DETECT */
-const lang = ref(navigator.language.startsWith("es") ? "es" : "en");
-
-function toggleLang() {
-  lang.value = lang.value === "en" ? "es" : "en";
-}
-
-/* 🌍 TRANSLATIONS */
-const text = {
-  en: {
-    allAboard: "All aboard!",
-    turning: "is turning",
-    journey: "Your journey begins here…",
-    departure: "DEPARTURE",
-    boarding: "BOARDING PASS",
-    reserve: "Reserve Your Seat",
-    destination: "DESTINATION",
-    giftStation: "GIFT STATION",
-    optionalGifts: "Optional gifts for Abigail",
-    toy: "Toy Station",
-    parcel: "Parcel Station",
-    envelope: "Envelope Station",
-  },
-  es: {
-    allAboard: "¡Todos a bordo!",
-    turning: "cumple",
-    journey: "Tu viaje comienza aquí…",
-    departure: "SALIDA",
-    boarding: "PASE DE ABORDAJE",
-    reserve: "Reserva tu lugar",
-    destination: "DESTINO",
-    giftStation: "ESTACIÓN DE REGALOS",
-    optionalGifts: "Regalos opcionales para Abigail",
-    toy: "Estación de juguetes",
-    parcel: "Estación de paquetes",
-    envelope: "Estación de sobres",
-  },
-};
+/* FORM */
 const form = ref({
   name: "",
   attending: "",
@@ -259,23 +146,13 @@ const loading = ref(false);
 const attendingResult = ref(null);
 
 async function submitForm() {
-  // ✅ required fields
   if (!form.value.name || !form.value.attending) {
-    alert(
-      lang.value === "es"
-        ? "Por favor completa todos los campos"
-        : "Please fill out all fields",
-    );
+    alert("Please fill out all fields");
     return;
   }
 
-  // ✅ guest validation (ONLY if attending = Yes)
   if (form.value.attending === "yes" && !form.value.guests) {
-    alert(
-      lang.value === "es"
-        ? "Por favor selecciona el número de invitados"
-        : "Please select number of guests",
-    );
+    alert("Please select number of guests");
     return;
   }
 
@@ -287,40 +164,27 @@ async function submitForm() {
       {
         method: "POST",
         body: JSON.stringify(form.value),
-      },
+      }
     );
 
     if (response.ok) {
-      attendingResult.value = form.value.attending; // ✅ ADD THIS LINE
+      attendingResult.value = form.value.attending;
       success.value = true;
     } else {
-      alert(
-        lang.value === "es"
-          ? "Algo salió mal. Inténtalo de nuevo."
-          : "Something went wrong. Please try again.",
-      );
+      alert("Something went wrong. Please try again.");
     }
   } catch (error) {
     console.error(error);
-
-    alert(
-      lang.value === "es"
-        ? "Error de red. Inténtalo de nuevo."
-        : "Network error. Try again.",
-    );
+    alert("Network error. Try again.");
   } finally {
     loading.value = false;
   }
 }
 
-/* 🎯 CLEAN ACCESS */
-const t = computed(() => text[lang.value]);
-const isYes = computed(() => success.value && attendingResult.value === "yes");
-const isNo = computed(() => success.value && attendingResult.value === "no");
-/* 🚂 STATE */
+/* STATE */
 const visibleCards = ref(0);
 
-/* 🚂 ANIMATION */
+/* ANIMATION */
 onMounted(() => {
   const duration = 6500;
   const totalCards = 4;
@@ -328,87 +192,79 @@ onMounted(() => {
 
   function animate(now) {
     const raw = Math.min((now - start) / duration, 1);
-
-    // ease-out (faster start, smoother finish)
     const progress = 1 - Math.pow(1 - raw, 2);
+
     const newIndex = Math.min(
       Math.floor(progress * totalCards) + 1,
-      totalCards,
+      totalCards
     );
 
-    // 🎯 only trigger when a NEW card appears
     if (newIndex !== visibleCards.value) {
       visibleCards.value = newIndex;
-
-      // ⏱ wait for DOM to update before bouncing
-      nextTick(() => {
-        triggerBounce(newIndex);
-      });
+      nextTick(() => triggerBounce(newIndex));
     }
 
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    }
-    // ❌ removed showTrain.value = false
+    if (progress < 1) requestAnimationFrame(animate);
   }
 
   requestAnimationFrame(animate);
 });
 
-/* 🎯 BOUNCE EFFECT */
 function triggerBounce(index) {
   const cards = document.querySelectorAll(".detail-box");
   const el = cards[index - 1];
-
   if (!el) return;
 
   el.classList.add("bounce");
-
-  setTimeout(() => {
-    el.classList.remove("bounce");
-  }, 400);
+  setTimeout(() => el.classList.remove("bounce"), 400);
 }
 
-/* 📍 ADDRESS */
-const address = "1302 Morgan Ln., Broken Bow, OK 74728";
+/* UPDATED ADDRESS */
+const address = "15681 Wildflower Lane, Kenefic, OK 74748";
 
-/* 🗺 MAP LINKS */
+/* MAP */
 const mapLink = /iPhone|iPad|Mac/i.test(navigator.userAgent)
   ? `http://maps.apple.com/?q=${encodeURIComponent(address)}`
   : `https://maps.google.com?q=${encodeURIComponent(address)}`;
 
-/* 🎁 GIFTS */
+/* GIFTS */
 const registryLink =
   "https://www.amazon.com/registries/gl/guest-view/1KBPQF8ME7P2A";
-
 const paypalLink = "https://www.paypal.com/pool/9nMCZ75mix";
-
 const cashappLink = "https://cash.app/f/POOL?id=zipwbb2e";
 
-/* 📅 CALENDAR */
+/* CALENDAR */
 const isApple = /iPhone|iPad/i.test(navigator.userAgent);
 
-const start = "20260425T220000Z";
-const end = "20260426T000000Z";
+/* 11AM CST */
+const start = "20260426T160000Z";
+const end = "20260426T180000Z";
 
 const googleCalendarLink = computed(
   () =>
     `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      lang.value === "es" ? "¡Abigail cumple DOS! 🚂" : "Abigail Turns TWO! 🚂",
-    )}&dates=${start}/${end}&location=${encodeURIComponent(address)}&details=${encodeURIComponent(
-      lang.value === "es"
-        ? "¡Chugga Chugga DOS DOS! Ven a celebrar."
-        : "Chugga Chugga TWO TWO! Come celebrate.",
-    )}`,
+      "Abigail Turns TWO! 🚂"
+    )}&dates=${start}/${end}&location=${encodeURIComponent(
+      address
+    )}&details=${encodeURIComponent(
+      "Chugga Chugga TWO TWO! Come celebrate."
+    )}`
 );
-const appleCalendarFile = computed(
-  () =>
-    `https://miriammedia2026.github.io/abigail-invite/${
-      lang.value === "es" ? "abigail-party-es.ics" : "abigail-party.ics"
-    }`,
-);
+
+const appleCalendarFile =
+  "https://miriammedia2026.github.io/abigail-invite/abigail-party.ics";
+
 const calendarLink = computed(() =>
-  isApple ? appleCalendarFile.value : googleCalendarLink.value,
+  isApple ? appleCalendarFile : googleCalendarLink.value
+);
+
+/* RSVP STATES */
+const isYes = computed(
+  () => success.value && attendingResult.value === "yes"
+);
+
+const isNo = computed(
+  () => success.value && attendingResult.value === "no"
 );
 </script>
 
@@ -829,28 +685,6 @@ h2 {
   letter-spacing: 1.2px;
   color: #555;
   font-weight: 700;
-}
-.lang-toggle .track {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 12px;
-  position: relative;
-  width: 70px; /* adjust if needed */
-}
-
-.lang-toggle .label {
-  font-size: 11px;
-  font-weight: 700;
-  z-index: 2;
-}
-
-.lang-toggle .label.left {
-  text-align: left;
-}
-
-.lang-toggle .label.right {
-  text-align: right;
 }
 
 .value {
